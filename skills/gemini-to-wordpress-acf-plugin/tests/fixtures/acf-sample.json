@@ -1,0 +1,26 @@
+[
+  {
+    "key": "group_demo",
+    "title": "Demo Fields",
+    "fields": [
+      {
+        "key": "field_applications",
+        "label": "Applications",
+        "name": "applications",
+        "type": "repeater"
+      },
+      {
+        "key": "field_faq",
+        "label": "FAQ",
+        "name": "faq",
+        "type": "repeater"
+      },
+      {
+        "key": "field_hero_bg_image",
+        "label": "Hero BG",
+        "name": "hero_bg_image",
+        "type": "image"
+      }
+    ]
+  }
+]

@@ -1,0 +1,177 @@
+{
+  "groups": [
+    {
+      "title": "Product Category Landing Fields",
+      "target": "taxonomy",
+      "taxonomy": "product_cat",
+      "fields": [
+        {
+          "name": "hero_bg_image",
+          "label": "Hero Background Image",
+          "type": "image"
+        },
+        {
+          "name": "intro_title",
+          "label": "Intro Title",
+          "type": "text"
+        },
+        {
+          "name": "intro_subtitle",
+          "label": "Intro Subtitle",
+          "type": "text"
+        },
+        {
+          "name": "category_subtitle",
+          "label": "Category Subtitle",
+          "type": "text"
+        },
+        {
+          "name": "feature_tags",
+          "label": "Feature Tags (pipe separated)",
+          "type": "text"
+        },
+        {
+          "name": "cat_image",
+          "label": "Category Image",
+          "type": "image"
+        },
+        {
+          "name": "product_content",
+          "label": "Intro Content",
+          "type": "wysiwyg"
+        },
+        {
+          "name": "cat_pdf",
+          "label": "Category PDF",
+          "type": "file"
+        },
+        {
+          "name": "youtube_url",
+          "label": "YouTube URL",
+          "type": "url"
+        },
+        {
+          "name": "youtube_content",
+          "label": "YouTube Content",
+          "type": "text"
+        },
+        {
+          "name": "standards_html",
+          "label": "Standards HTML",
+          "type": "wysiwyg"
+        },
+        {
+          "name": "model_reference_html",
+          "label": "Model Reference HTML",
+          "type": "wysiwyg"
+        },
+        {
+          "name": "key_specifications_html",
+          "label": "Key Specifications HTML",
+          "type": "wysiwyg"
+        },
+        {
+          "name": "faq_items",
+          "label": "FAQ Items",
+          "type": "repeater",
+          "button_label": "Add FAQ",
+          "layout": "row",
+          "sub_fields": [
+            {
+              "name": "faq_question",
+              "label": "Question",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "faq_answer",
+              "label": "Answer",
+              "type": "textarea",
+              "rows": 4,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "applications",
+          "label": "Applications",
+          "type": "repeater",
+          "button_label": "Add Application",
+          "layout": "row",
+          "sub_fields": [
+            {
+              "name": "app_title",
+              "label": "Title",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "app_description",
+              "label": "Description",
+              "type": "textarea",
+              "rows": 3
+            },
+            {
+              "name": "app_image",
+              "label": "Image",
+              "type": "image",
+              "required": true
+            },
+            {
+              "name": "app_icon",
+              "label": "Icon Name",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Product Card Reuse Fields",
+      "target": "post_type",
+      "post_type": "product",
+      "fields": [
+        {
+          "name": "product_image",
+          "label": "Product Image",
+          "type": "image"
+        },
+        {
+          "name": "conductor",
+          "label": "Conductor",
+          "type": "text"
+        },
+        {
+          "name": "insulation",
+          "label": "Insulation",
+          "type": "text"
+        },
+        {
+          "name": "sheath",
+          "label": "Sheath",
+          "type": "text"
+        },
+        {
+          "name": "voltage",
+          "label": "Voltage",
+          "type": "text"
+        },
+        {
+          "name": "standards",
+          "label": "Standards",
+          "type": "text"
+        },
+        {
+          "name": "fire_performance",
+          "label": "Fire Performance",
+          "type": "text"
+        },
+        {
+          "name": "reference",
+          "label": "Reference",
+          "type": "text"
+        }
+      ]
+    }
+  ]
+}

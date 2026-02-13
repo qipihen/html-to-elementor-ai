@@ -1,0 +1,10 @@
+{
+  "operations": [
+    {
+      "op": "set_setting",
+      "element_id": "heading1",
+      "path": "title",
+      "value": "Updated Heading"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "operations": [
+    {
+      "op": "set_setting",
+      "element_id": "heading1",
+      "path": "title",
+      "value": "Partial Applied"
+    },
+    {
+      "op": "move_element",
+      "element_id": "heading1",
+      "new_parent_id": "missing-parent",
+      "position": "end"
+    }
+  ]
+}

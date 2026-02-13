@@ -1,0 +1,10 @@
+{
+  "operations": [
+    {
+      "op": "move_element",
+      "element_id": "heading1",
+      "new_parent_id": "missing-parent",
+      "position": "end"
+    }
+  ]
+}

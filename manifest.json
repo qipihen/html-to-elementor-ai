@@ -1,0 +1,28 @@
+{
+   "action": {
+      "default_title": "Click to open panel"
+   },
+   "background": {
+      "service_worker": "background.iife.js",
+      "type": "module"
+   },
+   "content_scripts": [ {
+      "js": [ "content-ui/index.iife.js" ],
+      "matches": [ "http://*/*", "https://*/*", "file:///*" ]
+   } ],
+   "default_locale": "en",
+   "description": "Chrome extension to help convert html web page to elementor widget",
+   "icons": {
+      "256": "icon-256.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4FM2I13bEd+CtdVt/Q9otMAIEwylGFX0+mokTNYj+vU3wbFanU9oDTAUbLLHIsDT3XD4EtfUF0KcxXXhB9Q+Uuq4b55uMBkp6cIrmJNa+nuW/cCpGqjGzegbEOoOSzXlcZ+A538n8oRbT4L5fAixjg9hrg8kUJt4Mr4KR5G38DxDynx95+p/FR+OhFUPtGBlNAMY13+u3919m31tBmkVtbg77qZiGU1nvNQJC4qsfzbbTAQ0RUI0zVokbWrNJ60U4vJH4eYqgUOqVfJcmjvC1djyu4FPcMzuLN3dEpcYAfcr0AwFfnXteY+VRsEMA62AWwDnPynAbLyMmrqwJ/dR6QIDAQAB",
+   "manifest_version": 3,
+   "name": "HTML To Elementor",
+   "permissions": [ "storage", "activeTab", "debugger", "clipboardWrite" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.1.3",
+   "web_accessible_resources": [ {
+      "matches": [ "*://*/*", "file:///*" ],
+      "resources": [ "*.js", "*.css", "*.svg", "icon-256.png" ]
+   } ]
+}
