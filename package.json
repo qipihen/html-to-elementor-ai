@@ -1,0 +1,11 @@
+{
+  "name": "html-to-elementor-ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "perf": "node scripts/perf-smoke.mjs",
+    "package": "bash scripts/package-extension.sh"
+  }
+}

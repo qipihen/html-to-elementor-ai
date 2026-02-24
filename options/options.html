@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Elementor AI Capture Studio - Settings</title>
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <h1>Elementor AI Capture Studio - Settings</h1>
+        <p>Configure OpenRouter API locally in your browser.</p>
+      </header>
+
+      <section class="card">
+        <div class="field checkbox">
+          <input id="enabled" type="checkbox" />
+          <label for="enabled">Enable AI optimization</label>
+        </div>
+
+        <div class="field">
+          <label for="provider">Provider</label>
+          <select id="provider">
+            <option value="openrouter">OpenRouter</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="model">Model</label>
+          <select id="model">
+            <option value="gpt-4o-mini">gpt-4o-mini</option>
+            <option value="gpt-4o">gpt-4o</option>
+            <option value="claude-3.5-sonnet">claude-3.5-sonnet</option>
+            <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="apiKey">API Key</label>
+          <input id="apiKey" type="password" placeholder="sk-or-v1-..." autocomplete="off" />
+        </div>
+
+        <div class="field checkbox">
+          <input id="autoOptimize" type="checkbox" />
+          <label for="autoOptimize">Auto optimize after capture</label>
+        </div>
+
+        <div class="actions">
+          <button id="saveBtn" type="button" class="btn primary">Save</button>
+          <button id="testBtn" type="button" class="btn">Test Connection</button>
+          <button id="openExportAssistantBtn" type="button" class="btn">Open Export Assistant</button>
+        </div>
+
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card">
+        <h2>AI Compare Playground</h2>
+        <p class="card-desc">Paste sample HTML/CSS and base Elementor JSON to compare AI optimization output.</p>
+
+        <div class="field">
+          <label for="htmlInput">HTML</label>
+          <textarea id="htmlInput" rows="5" placeholder="<section>...</section>"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="cssInput">CSS</label>
+          <textarea id="cssInput" rows="4" placeholder=".hero { padding: 20px; }"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="baseResultInput">Base Elementor JSON</label>
+          <textarea id="baseResultInput" rows="6" placeholder='{"elType":"section","settings":{}}'></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="runOptimizeBtn" type="button" class="btn primary">Run AI Optimize</button>
+        </div>
+
+        <div class="compare-grid">
+          <div class="compare-col">
+            <h3>Base Result</h3>
+            <pre id="basePreview"></pre>
+          </div>
+          <div class="compare-col">
+            <h3>AI Optimized</h3>
+            <pre id="optimizedPreview"></pre>
+          </div>
+        </div>
+
+        <p id="optimizeSummary" class="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script type="module" src="./options.js"></script>
+  </body>
+</html>

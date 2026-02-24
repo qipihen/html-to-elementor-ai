@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Elementor AI Capture Studio - Export Assistant</title>
+    <link rel="stylesheet" href="./export.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Export Assistant</h1>
+        <p>Paste captured payload or Elementor JSON to generate Skill import payload.</p>
+      </header>
+
+      <section class="card">
+        <label for="inputJson">Input JSON</label>
+        <textarea id="inputJson" rows="14" placeholder='{"type":"elementor","elements":[...]}'></textarea>
+
+        <div class="actions">
+          <button id="exportBtn" class="btn primary" type="button">Generate Export</button>
+          <button id="copyBtn" class="btn" type="button">Copy Output</button>
+          <button id="downloadBtn" class="btn" type="button">Download JSON</button>
+        </div>
+
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card">
+        <h2>Generated Skill Payload</h2>
+        <pre id="outputJson"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="./export.js"></script>
+  </body>
+</html>
