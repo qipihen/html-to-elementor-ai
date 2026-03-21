@@ -25,6 +25,7 @@
     analysis: null,
     aiResult: null,
     exportResult: null,
+    autoOptimizeInFlight: false,
     drag: {
       active: false,
       startX: 0,
@@ -403,7 +404,7 @@
     });
 
     elements.loadCaptureBtn.addEventListener('click', () => {
-      void loadLastCapture({ silent: false });
+      void loadLastCapture({ silent: false, allowClipboard: true });
     });
 
     elements.startCaptureBtn.addEventListener('click', () => {
@@ -444,6 +445,22 @@
     elements.hubHead.addEventListener('pointerdown', onDragStart);
     window.addEventListener('pointermove', onDragMove);
     window.addEventListener('pointerup', onDragEnd);
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName !== 'local' || !changes?.[STORAGE_KEYS.LAST_CAPTURE]) {
+        return;
+      }
+      state.lastCapture = changes[STORAGE_KEYS.LAST_CAPTURE].newValue || null;
+      renderCaptureSummary();
+      setStatus(
+        elements.analysisStatus,
+        state.lastCapture ? 'Capture synced.' : 'Capture cleared.',
+        state.lastCapture ? 'ok' : ''
+      );
+      if (state.lastCapture) {
+        void maybeAutoOptimizeAfterCapture();
+      }
+    });
   }
 
   function onDragStart(event) {
@@ -494,7 +511,16 @@
   }
 
   async function loadLastCapture(options) {
-    const capture = await getFromStorage(STORAGE_KEYS.LAST_CAPTURE);
+    let capture = await getFromStorage(STORAGE_KEYS.LAST_CAPTURE);
+    if (!capture && options?.allowClipboard) {
+      capture = await tryLoadCaptureFromClipboard();
+      if (capture) {
+        await chrome.storage.local.set({
+          [STORAGE_KEYS.LAST_CAPTURE]: capture,
+          lastClickedAt: capture.capturedAt || new Date().toISOString()
+        });
+      }
+    }
     state.lastCapture = capture || null;
     renderCaptureSummary();
 
@@ -519,6 +545,9 @@
   }
 
   async function analyzeLastCapture() {
+    if (!state.lastCapture) {
+      await loadLastCapture({ silent: true, allowClipboard: true });
+    }
     if (!state.lastCapture) {
       setStatus(elements.analysisStatus, 'Load a capture first.', 'err');
       return;
@@ -564,6 +593,9 @@
 
   async function runAIOptimize() {
     const hasBaseJsonInput = safeString(elements.baseJsonInput.value).trim().length > 0;
+    if (!state.lastCapture && !hasBaseJsonInput) {
+      await loadLastCapture({ silent: true, allowClipboard: true });
+    }
     if (!state.lastCapture && !hasBaseJsonInput) {
       setStatus(elements.optimizeStatus, 'Load a capture or paste base JSON first.', 'err');
       return;
@@ -613,7 +645,37 @@
     }
   }
 
+  async function maybeAutoOptimizeAfterCapture() {
+    if (!state.lastCapture || state.autoOptimizeInFlight) {
+      return;
+    }
+
+    try {
+      const aiConfigResponse = await sendMessage({ action: ACTIONS.GET_AI_CONFIG });
+      const aiConfig = aiConfigResponse?.success ? aiConfigResponse.data : null;
+      const canAutoOptimize = Boolean(
+        aiConfig?.enabled &&
+        aiConfig?.autoOptimize &&
+        safeString(aiConfig?.apiKey).trim().length > 0
+      );
+      if (!canAutoOptimize) {
+        return;
+      }
+
+      state.autoOptimizeInFlight = true;
+      setStatus(elements.optimizeStatus, 'Auto optimize enabled. Running...');
+      await runAIOptimize();
+    } catch {
+      // Keep silent to avoid interrupting capture flow.
+    } finally {
+      state.autoOptimizeInFlight = false;
+    }
+  }
+
   async function generateSkillExport() {
+    if (!state.lastCapture) {
+      await loadLastCapture({ silent: true, allowClipboard: true });
+    }
     if (!state.lastCapture) {
       setStatus(elements.exportStatus, 'Load a capture first.', 'err');
       return;
@@ -685,12 +747,15 @@
   }
 
   function toCapturedElement(rawCapture, analysis, aiResult) {
+    const fallbackConverted = rawCapture?.convertedResult && typeof rawCapture.convertedResult === 'object'
+      ? rawCapture.convertedResult
+      : parseJsonInput(elements.baseJsonInput.value, { settings: {} });
     return {
       id: rawCapture.id || `capture_${Date.now()}`,
       blockType: analysis?.block?.type || 'static',
       html: safeString(rawCapture.html || rawCapture.outerHTML || ''),
       css: toCssText(rawCapture.cssAttributes || rawCapture.css || rawCapture.styles || {}),
-      convertedResult: aiResult?.data || parseJsonInput(elements.baseJsonInput.value, { settings: {} }),
+      convertedResult: aiResult?.data || fallbackConverted,
       suggestedFields: analysis?.block?.suggested_fields || []
     };
   }
@@ -845,5 +910,69 @@
       return text;
     }
     return `${text.slice(0, MAX_PREVIEW_LENGTH)}\n... [truncated ${text.length - MAX_PREVIEW_LENGTH} chars]`;
+  }
+
+  async function tryLoadCaptureFromClipboard() {
+    if (!navigator.clipboard?.readText) {
+      return null;
+    }
+
+    try {
+      const text = (await navigator.clipboard.readText()) || '';
+      const trimmed = text.trim();
+      if (!trimmed.startsWith('{')) {
+        return null;
+      }
+
+      const parsed = JSON.parse(trimmed);
+      const firstElement = parsed?.type === 'elementor' && Array.isArray(parsed.elements) ? parsed.elements[0] : null;
+      if (!firstElement || typeof firstElement !== 'object') {
+        return null;
+      }
+
+      const html = extractHtmlFromElementorNode(firstElement);
+      const capturedAt = new Date().toISOString();
+      return {
+        id: `capture_${Date.now()}`,
+        tagName: safeString(firstElement.elType || ''),
+        className: '',
+        html,
+        outerHTML: html,
+        innerHTML: '',
+        attributes: [],
+        children: [],
+        css: '',
+        convertedResult: firstElement,
+        sourceUrl: location.href,
+        capturedAt
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  function extractHtmlFromElementorNode(node) {
+    if (!node || typeof node !== 'object') {
+      return '';
+    }
+
+    const settings = node.settings;
+    if (settings && typeof settings === 'object') {
+      const html = safeString(settings.html || settings.editor || '');
+      if (html.trim().length > 0) {
+        return html;
+      }
+    }
+
+    if (Array.isArray(node.elements)) {
+      for (const child of node.elements) {
+        const html = extractHtmlFromElementorNode(child);
+        if (html.trim().length > 0) {
+          return html;
+        }
+      }
+    }
+
+    return '';
   }
 })();

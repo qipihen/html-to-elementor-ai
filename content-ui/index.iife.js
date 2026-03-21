@@ -47638,24 +47638,9 @@ For more information please go to https://github.com/aws/aws-sdk-js-v3#functiona
       n = e.match(t);
     return n ? n[0] : "";
   }
-  const Ave = new _D({
-    forcePathStyle: !1,
-    endpoint: "https://sgp1.digitaloceanspaces.com",
-    region: "us-east-1",
-    credentials: {
-      accessKeyId: "DO00V9Q3YVP7KFUCFN2A",
-      secretAccessKey: "kCsKjBr/MZLpQ6h8d6HcYFstXF/0ne80awNsXPAhT8A",
-    },
-  });
+  const Ave = null;
   function CD(e, t, n) {
-    const r = {
-      Bucket: "figma2elementor",
-      Key: `${t}`,
-      Body: e,
-      ContentType: n,
-      ACL: "public-read",
-    };
-    return Ave.putObject(r);
+    return Promise.resolve();
   }
   function kD(e, t) {
     var i, s, a, l, c, u, d;
@@ -47727,40 +47712,28 @@ For more information please go to https://github.com/aws/aws-sdk-js-v3#functiona
     "image/svg+xml": "svg",
   };
   async function wE(e, t) {
-    const n = Object.keys(e);
-    try {
-      await Promise.all(
-        n.map(async (r) => {
-          const o = e[r];
-          if (o.startsWith("http"))
-            return fetch(o).then(async (l) => {
-              var b;
-              if (!l.ok) {
-                e[r] = "";
-                return;
-              }
-              const c =
-                  ((b = l.headers.get("Content-Type")) == null
-                    ? void 0
-                    : b.toLowerCase()) || "",
-                u = Object.keys(ED).find((y) => c.startsWith(y));
-              let d = ED[u];
-              d || (d = new URL(o).pathname.split(".").pop() || "jpg");
-              const f = Date.now(),
-                g = await (await l.blob()).arrayBuffer();
-              (await CD(g, `${f}-${r}.${d}`, c || `image/${d}`),
-                (e[r] =
-                  `https://figma2elementor.sgp1.digitaloceanspaces.com/${f}-${r}.${d}`));
-            });
-          const i = "svg",
-            s = Date.now();
-          return CD(o, `${s}-${r}.${i}`, "image/svg+xml").then(() => {
-            e[r] =
-              `https://figma2elementor.sgp1.digitaloceanspaces.com/${s}-${r}.${i}`;
-          });
-        }),
-      );
-    } catch {}
+    const n = Object.keys(e || {});
+    for (const r of n) {
+      const o = e[r];
+      if (typeof o != "string") {
+        e[r] = "";
+        continue;
+      }
+      const i = o.trim();
+      if (
+        i.startsWith("http://") ||
+        i.startsWith("https://") ||
+        i.startsWith("data:") ||
+        i.startsWith("blob:")
+      ) {
+        continue;
+      }
+      if (i.startsWith("<svg")) {
+        e[r] = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(i)}`;
+        continue;
+      }
+      e[r] = "";
+    }
     kD(t, e);
   }
   const Tve = ["absolute", "fixed"];
@@ -57619,6 +57592,60 @@ ${hteBuildInteractionRuntimeScript()}`),
               navigator.clipboard
                 .writeText($t)
                 .then(() => {
+                  try {
+                    const Mn =
+                        typeof (ge == null ? void 0 : ge.outerHTML) == "string"
+                          ? ge.outerHTML
+                          : "",
+                      yt = Mn.length > 35e4 ? Mn.slice(0, 35e4) : Mn,
+                      Gt =
+                        typeof (ge == null ? void 0 : ge.innerHTML) == "string"
+                          ? ge.innerHTML
+                          : "",
+                      qt = Gt.length > 35e4 ? Gt.slice(0, 35e4) : Gt,
+                      ve = new Date().toISOString(),
+                      bt = {
+                        id: `capture_${Date.now()}`,
+                        tagName:
+                          typeof (ge == null ? void 0 : ge.tagName) == "string"
+                            ? ge.tagName.toLowerCase()
+                            : "",
+                        className:
+                          typeof (ge == null ? void 0 : ge.className) == "string"
+                            ? ge.className
+                            : "",
+                        html: yt,
+                        outerHTML: yt,
+                        innerHTML: qt,
+                        attributes:
+                          ge != null && ge.attributes
+                            ? Array.from(ge.attributes)
+                                .slice(0, 120)
+                                .map((jt) => ({ name: jt.name, value: jt.value }))
+                            : [],
+                        children:
+                          ge != null && ge.children
+                            ? Array.from(ge.children)
+                                .slice(0, 200)
+                                .map((jt) => ({
+                                  tagName:
+                                    typeof jt.tagName == "string"
+                                      ? jt.tagName.toLowerCase()
+                                      : "",
+                                  className:
+                                    typeof jt.className == "string" ? jt.className : "",
+                                  id: typeof jt.id == "string" ? jt.id : "",
+                                }))
+                            : [],
+                        css: "",
+                        sourceUrl: window.location.href,
+                        capturedAt: ve,
+                      };
+                    chrome.storage.local.set({
+                      lastClickedElementData: bt,
+                      lastClickedAt: ve,
+                    });
+                  } catch {}
                   (R || B({ type: "incrementUsage" }),
                     m({ message: "Data copied to clipboard", type: "success" }),
                     (se.actionTooltip.innerText = "copied to clipboard"),
@@ -57729,6 +57756,60 @@ ${hteBuildInteractionRuntimeScript()}`),
         (c(100),
           d("Copying to clipboard..."),
           await navigator.clipboard.writeText(j));
+        try {
+          const nt =
+              typeof (fe == null ? void 0 : fe.outerHTML) == "string"
+                ? fe.outerHTML
+                : "",
+            me = nt.length > 35e4 ? nt.slice(0, 35e4) : nt,
+            pe =
+              typeof (fe == null ? void 0 : fe.innerHTML) == "string"
+                ? fe.innerHTML
+                : "",
+            ge = pe.length > 35e4 ? pe.slice(0, 35e4) : pe,
+            V = new Date().toISOString(),
+            Fe = {
+              id: `capture_${Date.now()}`,
+              tagName:
+                typeof (fe == null ? void 0 : fe.tagName) == "string"
+                  ? fe.tagName.toLowerCase()
+                  : "",
+              className:
+                typeof (fe == null ? void 0 : fe.className) == "string"
+                  ? fe.className
+                  : "",
+              html: me,
+              outerHTML: me,
+              innerHTML: ge,
+              attributes:
+                fe != null && fe.attributes
+                  ? Array.from(fe.attributes)
+                      .slice(0, 120)
+                      .map((De) => ({ name: De.name, value: De.value }))
+                  : [],
+              children:
+                fe != null && fe.children
+                  ? Array.from(fe.children)
+                      .slice(0, 200)
+                      .map((De) => ({
+                        tagName:
+                          typeof De.tagName == "string"
+                            ? De.tagName.toLowerCase()
+                            : "",
+                        className:
+                          typeof De.className == "string" ? De.className : "",
+                        id: typeof De.id == "string" ? De.id : "",
+                      }))
+                  : [],
+              css: "",
+              sourceUrl: window.location.href,
+              capturedAt: V,
+            };
+          chrome.storage.local.set({
+            lastClickedElementData: Fe,
+            lastClickedAt: V,
+          });
+        } catch {}
         const nt = 300 - (Date.now() - H);
         (nt > 0 && (await new Promise((me) => setTimeout(me, nt))),
           m({ message: "Data copied to clipboard", type: "success" }),
@@ -57968,7 +58049,10 @@ ${hteBuildInteractionRuntimeScript()}`),
       : null;
   }
   const QE = document.createElement("div");
-  ((QE.id = "eacs-content-root"), document.body.append(QE));
+  ((QE.id = "eacs-content-root"),
+  (QE.style.display = "none"),
+  QE.setAttribute("aria-hidden", "true"),
+  document.body.append(QE));
   const YE = document.createElement("div");
   ((YE.id = "shadow-root"), QE.appendChild(YE), _O(YE).render(He.jsx(b_e, {})));
 })();
